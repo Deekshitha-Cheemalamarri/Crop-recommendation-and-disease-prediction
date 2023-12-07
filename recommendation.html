@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop Recommendation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            background-image: url('https://cdn.wallpapersafari.com/79/90/Wkq1xr.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-size: 25px;
+        }
+
+        input[type="submit"] {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #predictedCrop {
+            color: white;
+            font-weight: bold;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <form method="POST" action="/recommendation">
+        <label for="Temperature">Average Temperature:</label>
+        <input type="number" id="Temperature" name="Temperature"><br><br>
+        <label for="Humidity">Humidity:</label>
+        <input type="number" id="Humidity" name="Humidity"><br><br>
+        <label for="Rainfall">Rainfall:</label>
+        <input type="number" id="Rainfall" name="Rainfall"><br><br>
+        <label for="Ph">Ph of soil:</label>
+        <input type="number" id="Ph" name="Ph"><br><br>
+        <label for="N">Nitrogen:</label>
+        <input type="number" id="N" name="N"><br><br>
+        <label for="P">Phosphorous:</label>
+        <input type="number" id="P" name="P"><br><br>
+        <label for="K">Potassium:</label>
+        <input type="number" id="K" name="K"><br><br>
+
+        <br>
+        <span id="output"></span>
+        <br>
+        <button type="submit" value="submit">Submit</button>
+
+        <div style="color: white;">
+            <p>{{ recommendation_result }}</p>
+        </div>
+        <br>
+        <a href="/">Home</a>
+    </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+    
+                const formData = new FormData(form);
+    
+                fetch('/recommendation', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the output span with the recommendation result
+                    document.getElementById('output').innerText = data.recommendation_result;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
